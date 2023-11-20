@@ -9,30 +9,32 @@ import {
 import React, {FC} from 'react';
 import AppInput from '@ui/AppInput';
 import colors from '@utils/colors';
+import {useFormikContext} from 'formik';
 
 interface Props {
+  name: string;
   placeholder?: string;
   label?: string;
   keyboardType?: TextInputProps['keyboardType'];
   autoCapitalize?: TextInputProps['autoCapitalize'];
   secureTextEntry?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
-  onChange?: (text: string) => void;
-  value?: string;
-  errorMsg?: string;
 }
 
 const AuthInputField: FC<Props> = ({
+  name,
   placeholder,
   label,
   keyboardType,
   autoCapitalize,
   secureTextEntry,
   containerStyle,
-  onChange,
-  value,
-  errorMsg,
 }) => {
+  const {handleChange, values, errors, touched, handleBlur} = useFormikContext<{
+    [key: string]: string;
+  }>();
+
+  const errorMsg = errors[name] && touched[name] ? errors[name] : null;
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={styles.labelContainer}>
@@ -44,8 +46,9 @@ const AuthInputField: FC<Props> = ({
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         secureTextEntry={secureTextEntry}
-        onChangeText={onChange}
-        value={value}
+        onChangeText={handleChange(name)}
+        value={values[name]}
+        onBlur={handleBlur(name)}
       />
     </View>
   );
