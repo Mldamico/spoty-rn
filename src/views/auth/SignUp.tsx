@@ -60,6 +60,7 @@ const SignUp = () => {
             label="Password"
             autoCapitalize="none"
             secureTextEntry
+            containerStyle={styles.marginBottom}
           />
           <SubmitBtn title="Sign up" />
         </View>
