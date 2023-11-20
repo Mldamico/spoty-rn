@@ -19,6 +19,7 @@ interface Props {
   containerStyle?: StyleProp<ViewStyle>;
   onChange?: (text: string) => void;
   value?: string;
+  errorMsg?: string;
 }
 
 const AuthInputField: FC<Props> = ({
@@ -30,10 +31,14 @@ const AuthInputField: FC<Props> = ({
   containerStyle,
   onChange,
   value,
+  errorMsg,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
-      <Text style={styles.label}>{label}</Text>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.errorMsg}>{errorMsg}</Text>
+      </View>
       <AppInput
         placeholder={placeholder}
         keyboardType={keyboardType}
@@ -50,8 +55,16 @@ export default AuthInputField;
 
 const styles = StyleSheet.create({
   container: {},
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 5,
+  },
   label: {
     color: colors.CONTRAST,
-    padding: 5,
+  },
+  errorMsg: {
+    color: colors.ERROR,
   },
 });

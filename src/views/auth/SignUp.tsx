@@ -3,6 +3,25 @@ import React from 'react';
 import colors from '@utils/colors';
 import AuthInputField from '@components/auth/AuthInputField';
 import {Formik} from 'formik';
+import * as yup from 'yup';
+
+const signupSchema = yup.object({
+  name: yup
+    .string()
+    .trim("Name can't contain spaces")
+    .required("Name can't be empty")
+    .min(3, "Name can't be less than 3 characters"),
+  email: yup
+    .string()
+    .trim("Email can't contain spaces")
+    .required("Email can't be empty")
+    .email('Invalid email'),
+  password: yup
+    .string()
+    .trim("Password can't contain spaces")
+    .required('')
+    .min(6, 'Password is too short!'),
+});
 
 const initialValues = {
   name: '',
@@ -14,11 +33,12 @@ const SignUp = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Formik
+        validationSchema={signupSchema}
         initialValues={initialValues}
         onSubmit={values => {
           console.log(values);
         }}>
-        {({handleSubmit, handleChange, values}) => {
+        {({handleSubmit, handleChange, errors, values}) => {
           return (
             <View style={styles.formContainer}>
               <AuthInputField
@@ -27,6 +47,7 @@ const SignUp = () => {
                 containerStyle={styles.marginBottom}
                 onChange={handleChange('name')}
                 value={values.name}
+                errorMsg={errors.name}
               />
               <AuthInputField
                 placeholder="Your Email"
@@ -36,6 +57,7 @@ const SignUp = () => {
                 autoCapitalize="none"
                 onChange={handleChange('email')}
                 value={values.email}
+                errorMsg={errors.email}
               />
               <AuthInputField
                 placeholder="Your Password"
@@ -44,6 +66,7 @@ const SignUp = () => {
                 secureTextEntry
                 onChange={handleChange('password')}
                 value={values.password}
+                errorMsg={errors.password}
               />
               <Button title="Sign Up" onPress={() => handleSubmit()} />
             </View>
