@@ -18,6 +18,7 @@ interface Props {
   secureTextEntry?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   onChange?: (text: string) => void;
+  value?: string;
 }
 
 const AuthInputField: FC<Props> = ({
@@ -28,6 +29,7 @@ const AuthInputField: FC<Props> = ({
   secureTextEntry,
   containerStyle,
   onChange,
+  value,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -38,6 +40,7 @@ const AuthInputField: FC<Props> = ({
         autoCapitalize={autoCapitalize}
         secureTextEntry={secureTextEntry}
         onChangeText={onChange}
+        value={value}
       />
     </View>
   );
