@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import Form from '@components/form';
 import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
+import AppLink from '@ui/AppLink';
 const signupSchema = yup.object({
   name: yup
     .string()
@@ -66,6 +67,10 @@ const SignUp = () => {
             onRightIconPress={() => setSecureEntry(!secureEntry)}
           />
           <SubmitBtn title="Sign up" />
+          <View style={styles.linkContainer}>
+            <AppLink title="I Lost My Password" />
+            <AppLink title="Sign in" />
+          </View>
         </View>
       </Form>
     </SafeAreaView>
@@ -80,6 +85,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.PRIMARY,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
   },
   formContainer: {
     width: '80%',
