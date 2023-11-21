@@ -7,6 +7,7 @@ import Form from '@components/form';
 import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
+import CircleUi from '@ui/CircleUi';
 const signupSchema = yup.object({
   name: yup
     .string()
@@ -35,6 +36,10 @@ const SignUp = () => {
   const [secureEntry, setSecureEntry] = useState(true);
   return (
     <SafeAreaView style={styles.container}>
+      <CircleUi position="top-left" size={200} />
+      <CircleUi position="top-right" size={100} />
+      <CircleUi position="bottom-left" size={100} />
+      <CircleUi position="bottom-right" size={200} />
       <Form
         validationSchema={signupSchema}
         initialValues={initialValues}
