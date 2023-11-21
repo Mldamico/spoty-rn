@@ -1,4 +1,5 @@
 import {
+  Pressable,
   StyleProp,
   StyleSheet,
   Text,
@@ -6,7 +7,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import React, {FC, useCallback, useEffect} from 'react';
+import React, {FC, ReactNode, useCallback, useEffect} from 'react';
 import AppInput from '@ui/AppInput';
 import colors from '@utils/colors';
 import {useFormikContext} from 'formik';
@@ -26,6 +27,8 @@ interface Props {
   autoCapitalize?: TextInputProps['autoCapitalize'];
   secureTextEntry?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
+  rightIcon?: ReactNode;
+  onRightIconPress?(): void;
 }
 
 const AuthInputField: FC<Props> = ({
@@ -36,6 +39,8 @@ const AuthInputField: FC<Props> = ({
   autoCapitalize,
   secureTextEntry,
   containerStyle,
+  rightIcon,
+  onRightIconPress,
 }) => {
   const inputTransformValue = useSharedValue(0);
   const {handleChange, values, errors, touched, handleBlur} = useFormikContext<{
@@ -74,15 +79,22 @@ const AuthInputField: FC<Props> = ({
         <Text style={styles.label}>{label}</Text>
         <Text style={styles.errorMsg}>{errorMsg}</Text>
       </View>
-      <AppInput
-        placeholder={placeholder}
-        keyboardType={keyboardType}
-        autoCapitalize={autoCapitalize}
-        secureTextEntry={secureTextEntry}
-        onChangeText={handleChange(name)}
-        value={values[name]}
-        onBlur={handleBlur(name)}
-      />
+      <View>
+        <AppInput
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+          secureTextEntry={secureTextEntry}
+          onChangeText={handleChange(name)}
+          value={values[name]}
+          onBlur={handleBlur(name)}
+        />
+        {rightIcon ? (
+          <Pressable onPress={onRightIconPress} style={styles.rightIcon}>
+            {rightIcon}
+          </Pressable>
+        ) : null}
+      </View>
     </Animated.View>
   );
 };
@@ -95,6 +107,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 5,
+  },
+  rightIcon: {
+    width: 45,
+    height: 45,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   label: {
     color: colors.CONTRAST,
