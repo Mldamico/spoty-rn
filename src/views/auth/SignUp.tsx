@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import colors from '@utils/colors';
 import AuthInputField from '@components/form/AuthInputField';
@@ -40,6 +40,19 @@ const SignUp = () => {
       <CircleUi position="top-right" size={100} />
       <CircleUi position="bottom-left" size={100} />
       <CircleUi position="bottom-right" size={200} />
+
+      <View style={{width: '100%', marginBottom: 10, alignItems: 'center'}}>
+        <Text style={styles.title}>Spoty</Text>
+        <Text
+          style={{color: colors.SECONDARY, fontSize: 25, fontWeight: 'bold'}}>
+          Welcome!
+        </Text>
+        <Text
+          style={{color: colors.CONTRAST, fontSize: 16, paddingVertical: 10}}>
+          Let's get started by creating your account
+        </Text>
+      </View>
+
       <Form
         validationSchema={signupSchema}
         initialValues={initialValues}
@@ -102,5 +115,11 @@ const styles = StyleSheet.create({
   },
   marginBottom: {
     marginBottom: 20,
+  },
+  title: {
+    fontSize: 32,
+    color: colors.SECONDARY,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
