@@ -1,4 +1,4 @@
-import {StyleSheet, TextInput, View} from 'react-native';
+import {Keyboard, StyleSheet, TextInput, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import AppLink from '@ui/AppLink';
@@ -26,6 +26,14 @@ const Verification = () => {
     setOtp([...newOtp]);
   };
 
+  const handlePaste = (value: string) => {
+    if (value.length === 6) {
+      Keyboard.dismiss();
+      const newOtp = value.split('');
+      setOtp([...newOtp]);
+    }
+  };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
@@ -41,6 +49,9 @@ const Verification = () => {
             onKeyPress={({nativeEvent}) => {
               handleChange(nativeEvent.key, index);
             }}
+            onChangeText={handlePaste}
+            keyboardType="numeric"
+            value={otp[index] || ''}
           />
         ))}
       </View>
