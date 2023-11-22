@@ -6,7 +6,7 @@ interface Props extends TextInputProps {
   ref: any;
 }
 
-const OPTField: FC<Props> = forwardRef<TextInput, Props>((props, ref) => {
+const OTPField: FC<Props> = forwardRef<TextInput, Props>((props, ref) => {
   return (
     <TextInput
       {...props}
@@ -17,7 +17,7 @@ const OPTField: FC<Props> = forwardRef<TextInput, Props>((props, ref) => {
   );
 });
 
-export default OPTField;
+export default OTPField;
 
 const styles = StyleSheet.create({
   input: {
