@@ -1,18 +1,21 @@
 import {StyleSheet, TextInput, TextInputProps} from 'react-native';
-import React, {FC} from 'react';
+import React, {FC, forwardRef} from 'react';
 import colors from '@utils/colors';
 
-interface Props extends TextInputProps {}
+interface Props extends TextInputProps {
+  ref: any;
+}
 
-const OPTField: FC<Props> = props => {
+const OPTField: FC<Props> = forwardRef<TextInput, Props>((props, ref) => {
   return (
     <TextInput
       {...props}
+      ref={ref}
       style={[styles.input, props.style]}
       placeholderTextColor={colors.INACTIVE_CONTRAST}
     />
   );
-};
+});
 
 export default OPTField;
 

@@ -1,5 +1,5 @@
-import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import {StyleSheet, TextInput, View} from 'react-native';
+import React, {useRef} from 'react';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import OPTField from '@ui/OPTField';
 import AppLink from '@ui/AppLink';
@@ -8,11 +8,14 @@ import AppButton from '@ui/AppButton';
 const optFields = new Array(6).fill('');
 
 const Verification = () => {
+  // const [otp, setOtp] = useState([...optFields]);
+  const inputRef = useRef<TextInput>(null);
+
   return (
     <AuthFormContainer heading="Spoty" subHeading="Please look at your email">
       <View style={styles.inputContainer}>
         {optFields.map((_, index) => (
-          <OPTField key={index} placeholder="*" />
+          <OPTField ref={inputRef} key={index} placeholder="*" />
         ))}
       </View>
       <AppButton title="Submit" />
