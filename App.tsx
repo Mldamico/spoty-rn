@@ -1,8 +1,13 @@
 import React from 'react';
-import Verification from '@views/auth/Verification';
+import {NavigationContainer} from '@react-navigation/native';
+import AuthNavigator from 'src/navitation/AuthNavigator';
 
 const App = () => {
-  return <Verification />;
+  return (
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
+  );
 };
 
 export default App;
