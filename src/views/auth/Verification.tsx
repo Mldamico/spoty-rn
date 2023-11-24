@@ -1,16 +1,22 @@
 import {Keyboard, StyleSheet, TextInput, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import AppLink from '@ui/AppLink';
 import AppButton from '@ui/AppButton';
 import OTPField from '@ui/OTPField';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AuthStackParamList} from 'src/@types/navigation';
+
+type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
 
 const otpFields = new Array(6).fill('');
 
-const Verification = () => {
+const Verification: FC<Props> = props => {
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
   const inputRef = useRef<TextInput>(null);
+
+  console.log(props.route.params.userInfo);
 
   const handleChange = (value: string, index: number) => {
     const newOtp = [...otp];

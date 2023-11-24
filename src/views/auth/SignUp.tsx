@@ -11,6 +11,7 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import axios from 'axios';
+import client from 'android/app/src/api/client';
 const signupSchema = yup.object({
   name: yup
     .string()
@@ -29,10 +30,10 @@ const signupSchema = yup.object({
     .min(6, 'Password is too short!'),
 });
 
-interface NewUser {
-  name: '';
-  email: '';
-  password: '';
+export interface NewUser {
+  name: string;
+  email: string;
+  password: string;
 }
 
 const initialValues = {
@@ -50,10 +51,10 @@ const SignUp = () => {
     actions: FormikHelpers<NewUser>,
   ) => {
     try {
-      const response = await axios.post('http://localhost:4444/auth/signup', {
+      const {data} = await client.post('/auth/signup', {
         ...values,
       });
-      console.log(response.data);
+      navigation.navigate('Verification', {userInfo: data.user});
     } catch (error) {
       console.log('Sign up error: ', error);
     }
