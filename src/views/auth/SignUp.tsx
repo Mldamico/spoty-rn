@@ -9,6 +9,8 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
+import {FormikHelpers} from 'formik';
+import axios from 'axios';
 const signupSchema = yup.object({
   name: yup
     .string()
@@ -27,6 +29,12 @@ const signupSchema = yup.object({
     .min(6, 'Password is too short!'),
 });
 
+interface NewUser {
+  name: '';
+  email: '';
+  password: '';
+}
+
 const initialValues = {
   name: '',
   email: '',
@@ -36,13 +44,26 @@ const initialValues = {
 const SignUp = () => {
   const [secureEntry, setSecureEntry] = useState(true);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  const handleSubmit = async (
+    values: NewUser,
+    actions: FormikHelpers<NewUser>,
+  ) => {
+    try {
+      const response = await axios.post('http://localhost:4444/auth/signup', {
+        ...values,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log('Sign up error: ', error);
+    }
+  };
+
   return (
     <Form
       validationSchema={signupSchema}
       initialValues={initialValues}
-      onSubmit={values => {
-        console.log(values);
-      }}>
+      onSubmit={handleSubmit}>
       <AuthFormContainer
         heading="Spoty"
         subHeading="Let's get started by creating your account.">
