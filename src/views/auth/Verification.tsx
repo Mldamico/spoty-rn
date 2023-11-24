@@ -6,17 +6,20 @@ import AppButton from '@ui/AppButton';
 import OTPField from '@ui/OTPField';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from 'src/@types/navigation';
+import client from 'android/app/src/api/client';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
 
 const otpFields = new Array(6).fill('');
 
-const Verification: FC<Props> = props => {
+const Verification: FC<Props> = ({route}) => {
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
   const inputRef = useRef<TextInput>(null);
 
-  console.log(props.route.params.userInfo);
+  const {userInfo} = route.params;
 
   const handleChange = (value: string, index: number) => {
     const newOtp = [...otp];
@@ -44,6 +47,25 @@ const Verification: FC<Props> = props => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
 
+  const isValidOtp = otp.every(value => {
+    return value.trim();
+  });
+
+  const handleSubmit = async () => {
+    if (!isValidOtp) {
+      return;
+    }
+    try {
+      await client.post('/auth/verify-email', {
+        userId: userInfo.id,
+        token: otp.join(''),
+      });
+      navigation.navigate('SignIn');
+    } catch (error) {
+      console.log('error inside verification ', error);
+    }
+  };
+
   return (
     <AuthFormContainer heading="Spoty" subHeading="Please look at your email">
       <View style={styles.inputContainer}>
@@ -61,7 +83,7 @@ const Verification: FC<Props> = props => {
           />
         ))}
       </View>
-      <AppButton title="Submit" />
+      <AppButton title="Submit" onPress={handleSubmit} />
       <View style={styles.linkContainer}>
         <AppLink title="Re send OTP" />
       </View>

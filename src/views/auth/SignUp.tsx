@@ -9,8 +9,7 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
-import {FormikHelpers} from 'formik';
-import axios from 'axios';
+
 import client from 'android/app/src/api/client';
 const signupSchema = yup.object({
   name: yup
@@ -48,7 +47,7 @@ const SignUp = () => {
 
   const handleSubmit = async (
     values: NewUser,
-    actions: FormikHelpers<NewUser>,
+    // actions: FormikHelpers<NewUser>,
   ) => {
     try {
       const {data} = await client.post('/auth/signup', {
