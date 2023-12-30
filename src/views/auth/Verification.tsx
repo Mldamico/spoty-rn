@@ -1,4 +1,4 @@
-import {Keyboard, StyleSheet, TextInput, View} from 'react-native';
+import {Keyboard, StyleSheet, TextInput, View, Text} from 'react-native';
 import React, {FC, useEffect, useRef, useState} from 'react';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import AppLink from '@ui/AppLink';
@@ -8,12 +8,15 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from 'src/@types/navigation';
 import client from 'src/api/client';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import colors from '@utils/colors';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
 
 const otpFields = new Array(6).fill('');
 
 const Verification: FC<Props> = ({route}) => {
+  const [countDown, setCountDown] = useState(60);
+  const [canSendNewOtpRequest, setCanSendNewOtpRequest] = useState(false);
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,9 +48,39 @@ const Verification: FC<Props> = ({route}) => {
     }
   };
 
+  const requestOTP = async () => {
+    setCountDown(30);
+    setCanSendNewOtpRequest(false);
+    try {
+      await client.post('/auth/re-verify-email', {userId: userInfo.id});
+    } catch (error) {
+      console.log('Requesting for new otp error: ', error);
+    }
+  };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
+
+  useEffect(() => {
+    if (canSendNewOtpRequest) {
+      return;
+    }
+    const intervalId = setInterval(() => {
+      setCountDown(oldCd => {
+        if (oldCd <= 0) {
+          setCanSendNewOtpRequest(true);
+          clearInterval(intervalId);
+          return 0;
+        }
+        return oldCd - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [canSendNewOtpRequest]);
 
   const isValidOtp = otp.every(value => {
     return value.trim();
@@ -89,7 +122,14 @@ const Verification: FC<Props> = ({route}) => {
       </View>
       <AppButton busy={isSubmitting} title="Submit" onPress={handleSubmit} />
       <View style={styles.linkContainer}>
-        <AppLink title="Re send OTP" />
+        {countDown > 0 ? (
+          <Text style={styles.countdown}>{countDown} seconds</Text>
+        ) : null}
+        <AppLink
+          active={canSendNewOtpRequest}
+          title="Re send OTP"
+          onPress={requestOTP}
+        />
       </View>
     </AuthFormContainer>
   );
@@ -108,6 +148,11 @@ const styles = StyleSheet.create({
   linkContainer: {
     marginTop: 20,
     width: '100%',
-    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+  },
+  countdown: {
+    color: colors.SECONDARY,
+    marginRight: 10,
   },
 });
