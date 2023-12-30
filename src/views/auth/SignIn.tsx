@@ -9,6 +9,8 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/auth/AuthFormContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
+import client from 'src/api/client';
+import {FormikHelpers} from 'formik';
 
 const signinSchema = yup.object({
   email: yup
@@ -28,16 +30,37 @@ const initialValues = {
   password: '',
 };
 
+interface SignInUserInfo {
+  email: string;
+  password: string;
+}
+
 const SignIn = () => {
   const [secureEntry, setSecureEntry] = useState(true);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  const handleSubmit = async (
+    values: SignInUserInfo,
+    actions: FormikHelpers<SignInUserInfo>,
+  ) => {
+    actions.setSubmitting(true);
+    try {
+      console.log(values);
+      const {data} = await client.post('/auth/sign-in', {
+        ...values,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.log('Sign in error: ', error);
+    }
+    actions.setSubmitting(false);
+  };
   return (
     <Form
       validationSchema={signinSchema}
       initialValues={initialValues}
-      onSubmit={values => {
-        console.log(values);
-      }}>
+      onSubmit={handleSubmit}>
       <AuthFormContainer heading="Spoty" subHeading="Welcome back!">
         <View style={styles.formContainer}>
           <AuthInputField

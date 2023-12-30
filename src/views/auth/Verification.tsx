@@ -6,7 +6,7 @@ import AppButton from '@ui/AppButton';
 import OTPField from '@ui/OTPField';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from 'src/@types/navigation';
-import client from 'android/app/src/api/client';
+import client from 'src/api/client';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
@@ -16,18 +16,20 @@ const otpFields = new Array(6).fill('');
 const Verification: FC<Props> = ({route}) => {
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
   const inputRef = useRef<TextInput>(null);
 
   const {userInfo} = route.params;
 
   const handleChange = (value: string, index: number) => {
+    console.log({value, index});
     const newOtp = [...otp];
     if (value === 'Backspace') {
       if (!newOtp[index]) {
         setActiveOtpIndex(index - 1);
       }
-      newOtp[index] = '';
+      // newOtp[index] = '';
     } else {
       setActiveOtpIndex(index + 1);
       newOtp[index] = value;
@@ -55,6 +57,7 @@ const Verification: FC<Props> = ({route}) => {
     if (!isValidOtp) {
       return;
     }
+    setIsSubmitting(true);
     try {
       await client.post('/auth/verify-email', {
         userId: userInfo.id,
@@ -64,6 +67,7 @@ const Verification: FC<Props> = ({route}) => {
     } catch (error) {
       console.log('error inside verification ', error);
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -83,7 +87,7 @@ const Verification: FC<Props> = ({route}) => {
           />
         ))}
       </View>
-      <AppButton title="Submit" onPress={handleSubmit} />
+      <AppButton busy={isSubmitting} title="Submit" onPress={handleSubmit} />
       <View style={styles.linkContainer}>
         <AppLink title="Re send OTP" />
       </View>
