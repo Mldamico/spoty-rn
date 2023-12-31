@@ -11,6 +11,8 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import client from 'src/api/client';
 import {FormikHelpers} from 'formik';
+import {updateLoggedInState, updateProfile} from 'src/store/auth';
+import {useDispatch} from 'react-redux';
 
 const signinSchema = yup.object({
   email: yup
@@ -36,6 +38,7 @@ interface SignInUserInfo {
 }
 
 const SignIn = () => {
+  const dispatch = useDispatch();
   const [secureEntry, setSecureEntry] = useState(true);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
@@ -50,7 +53,8 @@ const SignIn = () => {
         ...values,
       });
 
-      console.log(data);
+      dispatch(updateProfile(data.profile));
+      dispatch(updateLoggedInState(true));
     } catch (error) {
       console.log('Sign in error: ', error);
     }
