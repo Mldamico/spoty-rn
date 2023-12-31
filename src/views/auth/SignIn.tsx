@@ -13,6 +13,7 @@ import client from 'src/api/client';
 import {FormikHelpers} from 'formik';
 import {updateLoggedInState, updateProfile} from 'src/store/auth';
 import {useDispatch} from 'react-redux';
+import {Keys, saveToAsyncStorage} from '@utils/asyncStorage';
 
 const signinSchema = yup.object({
   email: yup
@@ -52,7 +53,7 @@ const SignIn = () => {
       const {data} = await client.post('/auth/sign-in', {
         ...values,
       });
-
+      await saveToAsyncStorage(Keys.AUTH_TOKEN, data.token);
       dispatch(updateProfile(data.profile));
       dispatch(updateLoggedInState(true));
     } catch (error) {
